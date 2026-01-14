@@ -40,7 +40,7 @@ const About = () => {
                         
                         <FadeIn delay={100}>
                             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
-                                Crafting Digital Experiences That Matter
+                                Turning ideas into scalable, real-world web applications.
                             </h2>
                         </FadeIn>
 
@@ -153,7 +153,7 @@ const About = () => {
                             Tech Stack & Expertise
                         </h3>
                         <p className="text-sm text-white/60">
-                            Technologies I work with build amazing products
+                            Technologies I work with my Projects
                         </p>
                     </div>
 

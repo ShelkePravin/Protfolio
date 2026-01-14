@@ -2,15 +2,44 @@ import React, { useState } from "react";
 import * as Icons from 'lucide-react';
 import { PERSONAL_INFO, SOCIAL_LINKS } from "../utils/constants";
 import FadeIn from "../components/animations/FadeIn";
+import { useRef } from "react"
+import emailjs from "@emailjs/browser";
 
 
 const Contact = () => {
+
+    const form = useRef();
 
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         message: ''
     });
+
+    const sendEmail = async () => {
+        try {
+            // Debug logs
+            console.log('Service ID:', import.meta.env.VITE_EMAILJS_SERVICE_ID);
+            console.log('Template ID:', import.meta.env.VITE_EMAILJS_TEMPLATE_ID);
+            console.log('Public Key:', import.meta.env.VITE_EMAILJS_PUBLIC_KEY);
+            
+            const response = await emailjs.send(
+                import.meta.env.VITE_EMAILJS_SERVICE_ID,
+                import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+                {
+                    from_name: formData.name,
+                    from_email: formData.email,
+                    to_email: PERSONAL_INFO.email,
+                    message: formData.message,
+                }
+            );
+            console.log('Email sent successfully:', response);
+            return true;
+        } catch (error) {
+            console.error('Email error:', error.text || error);
+            return false;
+        }
+    };
 
     const [status, setStatus] = useState({ type: '', message: ''});
 
@@ -30,26 +59,36 @@ const Contact = () => {
         });
     }; 
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if(!formData.name || !formData.email || !formData.message) {
-            setStatus({ type: 'error', message: 'Please fill in all fields'});
+        if (!formData.name || !formData.email || !formData.message) {
+        setStatus({ type: 'error', message: 'Please fill in all fields' });
+        return;
+    }
 
-            return;
-        }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+        setStatus({ type: 'error', message: 'Please enter a valid email' });
+        return;
+    }
 
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if(!emailRegex.test(formData.email)) {
-            setStatus({ type: 'error', message: 'Please enter a valid email'});
+    const success = await sendEmail();
 
-            return;
-        }
+    if (success) {
+        setStatus({
+            type: 'success',
+            message: "Message sent successfully! I'll get back to you soon."
+        });
+        setFormData({ name: '', email: '', message: '' });
 
-        setStatus({ type: 'success', message: 'Message sent successfully! I\'ll get back to you soon.'});
-        setFormData({ name: '', email: '', message: ''});
-
-        setTimeout(() => setStatus({ type: '', message: ''}), 5000);
+        setTimeout(() => setStatus({ type: '', message: '' }), 5000);
+    } else {
+        setStatus({
+            type: 'error',
+            message: 'Failed to send message. Please try again later.'
+        });
+    }
     };
 
     const socialIcons = {
@@ -78,27 +117,35 @@ const Contact = () => {
                         <h2 className="text-4xl lg:text-5xl font-normal text-white mb-4">
                             Let's Work Together
                         </h2>
-                        <p className="text-lg text-white/60 max-w-2xl mx-auto">Have a project in mind? Let's discuss how we can bring your ideas to life.</p> 
+                        <p className="text-lg text-white/60 max-w-2xl mx-auto">Let's discuss how we can bring your ideas to life.</p> 
                     </div>
                 </FadeIn>
 
                 <div className="grid md:grid-cols-2 gap-12">
                     <FadeIn delay={100}>
                         <div className="bg-white/5 border border-white/10 rounded-2xl p-8">
-                            <form onSubmit={handleSubmit} className="space-y-6">
+                            <form ref={form} onSubmit={handleSubmit} className="space-y-6">
                                 <div>
                                     <label htmlFor="name" className="block text-sm font-medium text-white/80 mb-2">Name</label>
-                                    <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:ouline-none focus:ring-2 focus:ring-[#22C55E]/50 focus:border-[#22C55E]/50 transition-all duration-300" placeholder="Your Name"/>
+                                    <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-[#22C55E]/50 focus:border-[#22C55E]/50 transition-all duration-300" placeholder="Your Name"/>
                                 </div>
 
                                 <div>
                                     <label htmlFor="email" className="block text-sm font-medium text-white/80 mb-2">Email</label>
                                     <input type="email" id="email" name="email" value={formData.email} onChange={handleChange}
-                                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:ouline-none focus:ring-2 focus:ring-[#22C55E]/50 focus:border-[#22C55E]/50 transition-all duration-300" 
+                                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-[#22C55E]/50 focus:border-[#22C55E]/50 transition-all duration-300" 
                                     placeholder="your.email@example.com"/>
                                 </div>
 
-                                <button type="submit" className="w-full px-6 py-3 bg-linear-to-r from-[#22C55E]/10 to-[#22C55E] text-white font-medium rounded-xl hover:shadow-2xl hover:shadow-[#22C55E]/30 transition-all duration-300 flex items-center justify-center gap-2 group">
+                                <div>
+                                    <label htmlFor="message" className="block text-sm font-medium text-white/80 mb-2">Message</label>
+                                    <textarea id="message" name="message" value={formData.message} onChange={handleChange}
+                                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-[#22C55E]/50 focus:border-[#22C55E]/50 transition-all duration-300 resize-none" 
+                                    rows="5"
+                                    placeholder="Your message..."/>
+                                </div>
+
+                                <button type="submit" className="w-full px-6 py-3 bg-gradient-to-r from-[#22C55E]/10 to-[#22C55E] text-white font-medium rounded-xl hover:shadow-2xl hover:shadow-[#22C55E]/30 transition-all duration-300 flex items-center justify-center gap-2 group">
                                     <span>Send Message</span>
                                     {SendIcon && <SendIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />}
                                 </button>
@@ -127,9 +174,9 @@ const Contact = () => {
                             </div>
 
                             <div className="space-y-4">
-                                <div className="group relative bg-white/5 border border-white/10 rounded-2xl p-6 hover:border-[#22C55E]/30 transition-all duration-330">
+                                <div className="group relative bg-white/5 border border-white/10 rounded-2xl p-6 hover:border-[#22C55E]/30 transition-all duration-300">
                                     <div className="flex items-start gap-4">
-                                        <div className="p-3 bg-linear-to-br from-[#22C55E]/20 to-[#22C55E]/20 border border-[#22C55E]/30 rounded-3xl">
+                                        <div className="p-3 bg-gradient-to-br from-[#22C55E]/20 to-[#22C55E]/20 border border-[#22C55E]/30 rounded-3xl">
                                             {MailIcon && <MailIcon className="w-6 h-6 text-[#22C55E]" />}
                                         </div>
                                         <div className="flex-1">
@@ -139,12 +186,12 @@ const Contact = () => {
                                             </a>
                                         </div>
                                     </div>
-                                    <div className="absolute inset-0 bg-linear-to-br from-[#22C55E]/0 to-[#22C55E]/0 group-hover:from-[#22C55E]/5 group-hover:to-[#22C55E]/5 rounded-2xl transition-all duration-300 pointer-events-none"></div>
+                                    <div className="absolute inset-0 bg-gradient-to-br from-[#22C55E]/0 to-[#22C55E]/0 group-hover:from-[#22C55E]/5 group-hover:to-[#22C55E]/5 rounded-2xl transition-all duration-300 pointer-events-none"></div>
                                 </div>
 
-                                <div className="group relative bg-white/5 border border-white/10 rounded-2xl p-6 hover:border-[#22C55E]/30 transition-all duration-330">
+                                <div className="group relative bg-white/5 border border-white/10 rounded-2xl p-6 hover:border-[#22C55E]/30 transition-all duration-300">
                                     <div className="flex items-start gap-4">
-                                        <div className="p-3 bg-linear-to-br from-[#22C55E]/20 to-[#22C55E]/20 border border-[#22C55E]/30 rounded-3xl">
+                                        <div className="p-3 bg-gradient-to-br from-[#22C55E]/20 to-[#22C55E]/20 border border-[#22C55E]/30 rounded-3xl">
                                             <MapPinIcon className="w-6 h-6 text-[#22C55E]" />
                                         </div>
                                         <div className="flex-1">
@@ -172,7 +219,7 @@ const Contact = () => {
                                             rel="noopener noreferrer"
                                             className="p-4 bg-white/5 rounded-xl border border-white/10 hover:bg-white/10 hover:border-[#22C55E]/50 hover:scale-110 transition-all duration-300 group"
                                         >
-                                            <Icon className="w-6 h-6 text-white/60 group-hover:text-[#22C55E] transition:colors" />
+                                            <Icon className="w-6 h-6 text-white/60 group-hover:text-[#22C55E] transition-colors" />
                                         </a>
                                     ) : null;
                                 })}

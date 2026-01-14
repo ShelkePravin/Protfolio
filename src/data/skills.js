@@ -15,13 +15,13 @@ export const skills = [
         id: 3,
         name: 'TypeScript',
         icon: 'FileType',
-        level: 'Intermediate',
+        level: 'Beginer',
     },
     {
         id: 4,
         name: 'Tailwind CSS',
         icon: 'Palette',
-        level: 'Intermediate',
+        level: 'Beginer',
     },
     {
         id: 5,
@@ -39,7 +39,7 @@ export const skills = [
         id: 7,
         name: 'Redux',
         icon: 'Database',
-        level: 'Intermediate',
+        level: 'Beginer',
     },
     {
         id: 8,
@@ -51,19 +51,19 @@ export const skills = [
         id: 9,
         name: 'Docker',
         icon: 'Box',
-        level: 'Intermediate',
+        level: 'Beginer',
     },
     {
         id: 10,
         name: 'CI/CD',
         icon: 'GitBranch',
-        level: 'Intermediate',
+        level: 'Beginer',
     }, 
     {
         id: 11,
         name: 'Kubernates',
         icon: 'Layers',
-        level: 'Intermediate',
+        level: 'Beginer',
     },
     {
         id: 12,

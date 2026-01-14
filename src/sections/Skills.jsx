@@ -29,9 +29,9 @@ const Skills = () => {
     // Get proficiency percentage
     const getProficiencyLevel = (level) => {
         const levels = {
-            'Expert': 95,
-            'Advanced': 80,
-            'Intermediate': 65,
+            'Beginer': 50,
+            'Advanced': 90,
+            'Intermediate': 70,
         }
         return levels[level] || 50;
     };
@@ -39,7 +39,7 @@ const Skills = () => {
     //Get level color
     const getLevelColor = (level) => {
         const colors = {
-            'Expert': 'text-[#8DFF69] bg-[#8DFF69]/20 border-[#8DFF69]/30',
+            'Beginer': 'text-[#8DFF69] bg-[#8DFF69]/20 border-[#8DFF69]/30',
             'Advanced': 'text-cyan-400 bg-cyan-500/20 border-cyan-500/30',
             'Intermediate': 'text-emerald-400 bg-emerald-500/20 border-emerald-500/30'
         };
@@ -82,7 +82,7 @@ const Skills = () => {
 
                             {/* Skills List */}
                             <div className="space-y-5">
-                                {categorySkills.map((skill, skillIndex) => {
+                                {categorySkills.map((skill) => {
                                     const IconComponent = Icons[skill.icon] || Icons.Code2;
                                     const proficiency = getProficiencyLevel(skill.level);
 

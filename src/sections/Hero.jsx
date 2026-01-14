@@ -17,8 +17,8 @@ const Hero = () => {
                     {/* Left Column - Content */}
                     <div className="text-left">
                         <FadeIn delay={0}>
-                            <div className="inline-flex items-center gap-2.5 px-[18px] py-[11px] mb-8 bg-gradient-to-r from-green-200 via-green-100 to-green-100 text-black rounded-full shadow-lg">
-                                <Star className="w-4 h-4 text-white fill-white" />
+                            <div className="inline-flex items-center gap-2.5 px-[18px] py-[11px] mb-8 border border-[#22C55E]/30 bg-[#22C55E]/10 text-[#22C55E] rounded-full shadow-lg">
+                                <Star className="w-4 h-4 text-[#22C55E] fill-[#22C55E]" />
                                 <span className="">
                                     {PERSONAL_INFO.title} | Based in {PERSONAL_INFO.location}
                                 </span>
